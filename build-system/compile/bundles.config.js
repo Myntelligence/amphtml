@@ -707,6 +707,12 @@ exports.extensionBundles = [
     type: TYPES.MISC,
   },
   {
+    name: 'amp-myvideo-player',
+    version: '0.1',
+    latestVersion: '0.1',
+    type: TYPES.MISC,
+  },
+  {
     name: 'amp-mega-menu',
     version: '0.1',
     latestVersion: '0.1',
