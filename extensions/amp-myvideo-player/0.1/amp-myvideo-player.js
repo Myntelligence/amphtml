@@ -15,7 +15,6 @@
  */
 
 import {Deferred} from '../../../src/utils/promise';
-import {Layout} from '../../../src/layout';
 import {Services} from '../../../src/services';
 import {createFrameFor} from '../../../src/iframe-video';
 import {installVideoManagerForDoc} from '../../../src/service/video-manager-impl';
@@ -60,7 +59,7 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
   preconnectCallback(opt_onLayout) {
     Services.preconnectFor(this.win).url(
       this.getAmpDoc(),
-      'https://wapi.theoutplay.com',
+      'http://localhost:3000/widget.html',
       opt_onLayout
     );
 
@@ -101,14 +100,6 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
       element
     );
 
-    console.log({
-      widgetType: this.widgetType_,
-      publisherID: this.publisherID_,
-      selectionID: this.selectionID_,
-      configurationID: this.configurationID_,
-      hashID: this.hashID_,
-    });
-
     const deferred = new Deferred();
     this.playerReadyPromise_ = deferred.promise;
     this.playerReadyResolver_ = deferred.resolve;
@@ -119,21 +110,38 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
 
   /** @override */
   isLayoutSupported(layout) {
-    return layout == Layout.RESPONSIVE;
+    return layout;
   }
 
   /** @override */
   layoutCallback() {
-    const iframe = createFrameFor(this, 'https://fakepage.com/ampFrame.html');
+    const urlParameters = [
+      `widget=${this.widgetType_}`,
+      `publisher=${this.publisherID_}`,
+      `selection=${this.selectionID_}`,
+      `configuration=${this.configurationID_}`,
+      `hash=${this.hashID_}`,
+      `hostPageUrl=${window.location.href}`,
+      `hostPageHostname=${window.location.hostname}`,
+      `hostPageHeight=${window.document.body.scrollHeight}`,
+      `hostPageScrollY=${window.scrollY}`,
+      `hostPageScrollX=${window.scrollX}`,
+      `hostPageInnerWidth=${window.innerWidth}`,
+      `hostPageInnerHeight=${window.innerHeight}`,
+    ];
+    const iframe = createFrameFor(
+      this,
+      `http://localhost:3000/widget.html?${urlParameters.join('&')}`
+    );
 
-    this.iframe_ = /** @type {HTMLIFrameElement} */ (iframe);
+    this.iframe_ = iframe;
 
     iframe.setAttribute(
       'sandbox',
       'allow-scripts allow-same-origin allow-popups'
     );
 
-    return this.loadPromise(iframe).then(this.playerReadyPromise_);
+    return this.loadPromise(iframe).then(this.playerReadyResolver_);
   }
 }
 
