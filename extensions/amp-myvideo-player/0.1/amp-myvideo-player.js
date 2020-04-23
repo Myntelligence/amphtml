@@ -115,6 +115,8 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
 
   /** @override */
   layoutCallback() {
+    const iframeWrapperPosition = this.element.getBoundingClientRect();
+
     const urlParameters = [
       `widget=${this.widgetType_}`,
       `publisher=${this.publisherID_}`,
@@ -128,7 +130,10 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
       `hostPageScrollX=${window.scrollX}`,
       `hostPageInnerWidth=${window.innerWidth}`,
       `hostPageInnerHeight=${window.innerHeight}`,
+      `iframeTopPosition=${iframeWrapperPosition.top}`,
+      `iframeLeftPosition=${iframeWrapperPosition.left}`,
     ];
+
     const iframe = createFrameFor(
       this,
       `http://localhost:3000/widget.html?${urlParameters.join('&')}`
