@@ -41,15 +41,6 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
 
     /** @private {string} */
     this.hashID_ = '';
-
-    /** @private {?Promise} */
-    // this.playerReadyPromise_ = null;
-
-    /** @private {?Function} */
-    // this.playerReadyResolver_ = null;
-
-    /** @private {?HTMLIFrameElement} */
-    this.iframe_ = null;
   }
 
   /**
@@ -60,6 +51,11 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
     Services.preconnectFor(this.win).url(
       this.getAmpDoc(),
       'http://localhost:3000/widget.html',
+      opt_onLayout
+    );
+    Services.preconnectFor(this.win).url(
+      this.getAmpDoc(),
+      'https://wapi.theoutplay.com/',
       opt_onLayout
     );
 
@@ -117,21 +113,56 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
   layoutCallback() {
     const iframeWrapperPosition = this.element.getBoundingClientRect();
 
+    const widget = encodeURIComponent(`widget=${this.widgetType_}`);
+    const publisher = encodeURIComponent(`publisher=${this.publisherID_}`);
+    const selection = encodeURIComponent(`selection=${this.selectionID_}`);
+    const configuration = encodeURIComponent(
+      `configuration=${this.configurationID_}`
+    );
+    const hash = encodeURIComponent(`hash=${this.hashID_}`);
+    const hostPageUrl = encodeURIComponent(
+      `hostPageUrl=${window.location.href}`
+    );
+    const hostPageHostname = encodeURIComponent(
+      `hostPageHostname=${window.location.hostname}`
+    );
+    const hostPageHeight = encodeURIComponent(
+      `hostPageHeight=${window.document.body.scrollHeight}`
+    );
+    const hostPageScrollY = encodeURIComponent(
+      `hostPageScrollY=${window.scrollY}`
+    );
+    const hostPageScrollX = encodeURIComponent(
+      `hostPageScrollX=${window.scrollX}`
+    );
+    const hostPageInnerWidth = encodeURIComponent(
+      `hostPageInnerWidth=${window.innerWidth}`
+    );
+    const hostPageInnerHeight = encodeURIComponent(
+      `hostPageInnerHeight=${window.innerHeight}`
+    );
+    const iframeTopPosition = encodeURIComponent(
+      `iframeTopPosition=${iframeWrapperPosition.top}`
+    );
+    const iframeLeftPosition = encodeURIComponent(
+      `iframeLeftPosition=${iframeWrapperPosition.left}`
+    );
+
     const urlParameters = [
-      `widget=${this.widgetType_}`,
-      `publisher=${this.publisherID_}`,
-      `selection=${this.selectionID_}`,
-      `configuration=${this.configurationID_}`,
-      `hash=${this.hashID_}`,
-      `hostPageUrl=${window.location.href}`,
-      `hostPageHostname=${window.location.hostname}`,
-      `hostPageHeight=${window.document.body.scrollHeight}`,
-      `hostPageScrollY=${window.scrollY}`,
-      `hostPageScrollX=${window.scrollX}`,
-      `hostPageInnerWidth=${window.innerWidth}`,
-      `hostPageInnerHeight=${window.innerHeight}`,
-      `iframeTopPosition=${iframeWrapperPosition.top}`,
-      `iframeLeftPosition=${iframeWrapperPosition.left}`,
+      widget,
+      publisher,
+      selection,
+      configuration,
+      hash,
+      hostPageUrl,
+      hostPageHostname,
+      hostPageHeight,
+      hostPageScrollY,
+      hostPageScrollX,
+      hostPageInnerWidth,
+      hostPageInnerHeight,
+      iframeTopPosition,
+      iframeLeftPosition,
     ];
 
     const iframe = createFrameFor(
@@ -150,6 +181,6 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
   }
 }
 
-AMP.extension(TAG, '0.1', AMP => {
+AMP.extension(TAG, '0.1', (AMP) => {
   AMP.registerElement(TAG, AmpMyvideoPlayer);
 });
