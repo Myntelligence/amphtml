@@ -18,6 +18,7 @@ import {Deferred} from '../../../src/utils/promise';
 import {Services} from '../../../src/services';
 import {createFrameFor} from '../../../src/iframe-video';
 import {installVideoManagerForDoc} from '../../../src/service/video-manager-impl';
+import {removeElement} from '../../../src/dom';
 import {userAssert} from '../../../src/log';
 
 const TAG = 'amp-myvideo-player';
@@ -41,6 +42,9 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
 
     /** @private {string} */
     this.hashID_ = '';
+
+    /** @private {?Element} */
+    this.iframe_ = null;
   }
 
   /**
@@ -58,8 +62,6 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
       'https://wapi.theoutplay.com/',
       opt_onLayout
     );
-
-    // TODO: Add preconnect to the amp-widget player url
   }
 
   /** @override */
@@ -101,7 +103,6 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
     this.playerReadyResolver_ = deferred.resolve;
 
     installVideoManagerForDoc(element);
-    // Services.videoManagerForDoc(element).register(this);
   }
 
   /** @override */
@@ -178,6 +179,22 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
     );
 
     return this.loadPromise(iframe).then(this.playerReadyResolver_);
+  }
+
+  /** @override */
+  unlayoutCallback() {
+    if (this.iframe_) {
+      removeElement(this.iframe_);
+
+      this.iframe_ = null;
+    }
+
+    const deferred = new Deferred();
+
+    this.playerReadyPromise_ = deferred.promise;
+    this.playerReadyResolver_ = deferred.resolve;
+
+    return true; // Call layoutCallback again.
   }
 }
 

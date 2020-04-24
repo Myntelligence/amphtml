@@ -16,23 +16,156 @@
 
 import '../amp-myvideo-player';
 
-describes.realWin('amp-myvideo-player', {
-  amp: {
-    extensions: ['amp-myvideo-player'],
+describes.realWin(
+  'amp-myvideo-player',
+  {
+    amp: {
+      extensions: ['amp-myvideo-player'],
+    },
   },
-}, env => {
+  (env) => {
+    let win;
+    let doc;
 
-  let win;
-  let element;
+    beforeEach(() => {
+      win = env.win;
+      doc = win.document;
+    });
 
-  beforeEach(() => {
-    win = env.win;
-    element = win.document.createElement('amp-myvideo-player');
-    win.document.body.appendChild(element);
-  });
+    const widgetAttributes = {
+      'data-widget': 'intext',
+      'data-publisher': '998',
+      'data-selection': '203',
+      'data-configuration': '633',
+      'data-hash': '8ad989d0050b4bb2cefd13807be3d702',
+    };
 
-  it('should have hello world when built', () => {
-    element.build();
-    expect(element.querySelector('div').textContent).to.equal('hello world');
-  });
-});
+    function getIframe(bc) {
+      return bc.querySelector('iframe');
+    }
+
+    function getEncodedAttributes(bc) {
+      const iframeClientRectProperties = getIframe(bc).getBoundingClientRect();
+      const widget = encodeURIComponent(
+        `widget=${widgetAttributes['data-widget']}`
+      );
+      const publisher = encodeURIComponent(
+        `publisher=${widgetAttributes['data-publisher']}`
+      );
+      const selection = encodeURIComponent(
+        `selection=${widgetAttributes['data-selection']}`
+      );
+      const configuration = encodeURIComponent(
+        `configuration=${widgetAttributes['data-configuration']}`
+      );
+      const hash = encodeURIComponent(`hash=${widgetAttributes['data-hash']}`);
+      const hostPageUrl = encodeURIComponent(
+        `hostPageUrl=${window.location.href}`
+      );
+      const hostPageHostname = encodeURIComponent(
+        `hostPageHostname=${window.location.hostname}`
+      );
+      const hostPageHeight = encodeURIComponent(
+        `hostPageHeight=${window.document.body.scrollHeight}`
+      );
+      const hostPageScrollY = encodeURIComponent(
+        `hostPageScrollY=${window.scrollY}`
+      );
+      const hostPageScrollX = encodeURIComponent(
+        `hostPageScrollX=${window.scrollX}`
+      );
+      const hostPageInnerWidth = encodeURIComponent(
+        `hostPageInnerWidth=${window.innerWidth}`
+      );
+      const hostPageInnerHeight = encodeURIComponent(
+        `hostPageInnerHeight=${window.innerHeight}`
+      );
+      const iframeTopPosition = encodeURIComponent(
+        `iframeTopPosition=${iframeClientRectProperties.top}`
+      );
+      const iframeLeftPosition = encodeURIComponent(
+        `iframeLeftPosition=${iframeClientRectProperties.left}`
+      );
+
+      return [
+        widget,
+        publisher,
+        selection,
+        configuration,
+        hash,
+        hostPageUrl,
+        hostPageHostname,
+        hostPageHeight,
+        hostPageScrollY,
+        hostPageScrollX,
+        hostPageInnerWidth,
+        hostPageInnerHeight,
+        iframeTopPosition,
+        iframeLeftPosition,
+      ].join('&');
+    }
+
+    function getIframeSrc(bc) {
+      return `http://localhost:3000/widget.html?${getEncodedAttributes(bc)}`;
+    }
+
+    function renderMyVideoPlayer(attributes, opt_responsive) {
+      const bc = doc.createElement('amp-myvideo-player');
+
+      for (const key in attributes) {
+        bc.setAttribute(key, attributes[key]);
+      }
+
+      bc.setAttribute('width', '480');
+      bc.setAttribute('height', '270');
+
+      if (opt_responsive) {
+        bc.setAttribute('layout', 'responsive');
+      }
+
+      doc.body.appendChild(bc);
+
+      return bc
+        .build()
+        .then(() => bc.layoutCallback())
+        .then(() => bc);
+    }
+
+    it('renders', () => {
+      const player = renderMyVideoPlayer(widgetAttributes, true);
+
+      return player.then((bc) => {
+        const iframe = getIframe(bc);
+
+        expect(iframe).to.not.be.null;
+        expect(iframe.tagName).to.equal('IFRAME');
+      });
+    });
+
+    it('should call the endpoint with all query parameters', () => {
+      const player = renderMyVideoPlayer(widgetAttributes, true);
+
+      return player.then((bc) => {
+        const iframe = getIframe(bc);
+
+        expect(iframe.src).to.equal(getIframeSrc(bc));
+      });
+    });
+
+    it('removes iframe after unlayoutCallback', () => {
+      const player = renderMyVideoPlayer(widgetAttributes, true);
+
+      return player.then((bc) => {
+        const iframe = getIframe(bc);
+
+        expect(iframe).to.not.be.null;
+
+        const obj = bc.implementation_;
+        obj.unlayoutCallback();
+
+        expect(getIframe(bc)).to.be.null;
+        expect(obj.iframe_).to.be.null;
+      });
+    });
+  }
+);
