@@ -54,7 +54,7 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
   preconnectCallback(opt_onLayout) {
     Services.preconnectFor(this.win).url(
       this.getAmpDoc(),
-      'http://localhost:3000/widget.html',
+      'https://amp.theoutplay.com/dev/',
       opt_onLayout
     );
     Services.preconnectFor(this.win).url(
@@ -171,7 +171,7 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
       `https://amp.theoutplay.com/dev/widget.html?${urlParameters.join('&')}`
     );
 
-    this.iframe_ = iframe;
+    this.iframe_ = /** @type {HTMLIFrameElement} */ (iframe);
 
     iframe.setAttribute(
       'sandbox',
