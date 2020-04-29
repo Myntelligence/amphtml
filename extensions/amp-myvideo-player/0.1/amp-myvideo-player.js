@@ -168,7 +168,7 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
 
     const iframe = createFrameFor(
       this,
-      `https://amp.theoutplay.com/dev/widget.html?${urlParameters.join('&')}`
+      `http://localhost:3000/widget.html?${urlParameters.join('&')}`
     );
 
     this.iframe_ = /** @type {HTMLIFrameElement} */ (iframe);
@@ -195,6 +195,49 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
     this.playerReadyResolver_ = deferred.resolve;
 
     return true; // Call layoutCallback again.
+  }
+
+  /**
+   * Sends a command to the player through postMessage.
+   * @param {object} messageObject
+   * @private
+   * */
+  sendMessageToWidget_(messageObject) {
+    this.playerReadyPromise_.then(() => {
+      if (this.iframe_ && this.iframe_.contentWindow) {
+        const message = 'topw://' + JSON.stringify(messageObject);
+
+        this.iframe_.contentWindow./*OK*/ postMessage(message, '*');
+      }
+    });
+  }
+
+  /** @override */
+  play() {
+    this.sendMessageToWidget_({
+      type: 'play',
+    });
+  }
+
+  /** @override */
+  pause() {
+    this.sendMessageToWidget_({
+      type: 'pause',
+    });
+  }
+
+  /** @override */
+  mute() {
+    this.sendMessageToWidget_({
+      type: 'mute',
+    });
+  }
+
+  /** @override */
+  unmute() {
+    this.sendMessageToWidget_({
+      type: 'unmute',
+    });
   }
 }
 

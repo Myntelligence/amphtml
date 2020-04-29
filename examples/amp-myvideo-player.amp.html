@@ -8,6 +8,11 @@
       name="viewport"
       content="width=device-width,minimum-scale=1,initial-scale=1"
     />
+    <script
+      async
+      custom-element="amp-myvideo-player"
+      src="https://cdn.ampproject.org/v0/amp-myvideo-player-0.1.js"
+    ></script>
     <style amp-boilerplate>
       body {
         -webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
@@ -64,9 +69,25 @@
         grid-gap: 16px;
       }
 
-      .box {
-        background: red;
-        padding: 16px;
+      .controls-wrapper {
+        display: grid;
+        grid-gap: 16px;
+        grid-auto-flow: column;
+        justify-content: start;
+      }
+
+      .controls-wrapper button {
+        background-color: rgb(74, 167, 221);
+        border-radius: 4px;
+        font-size: 14px;
+        padding: 6px 18px;
+        border: none;
+        color: #fff;
+        letter-spacing: 0.4px;
+      }
+
+      .controls-wrapper button:active {
+        background-color: rgb(58, 144, 194);
       }
     </style>
     <noscript
@@ -84,30 +105,14 @@
         color: red;
       }
     </style>
-    <script
-      async
-      custom-element="amp-myvideo-player"
-      src="https://cdn.ampproject.org/v0/amp-myvideo-player-0.1.js"
-    ></script>
+
     <script async src="https://cdn.ampproject.org/v0.js"></script>
   </head>
   <body>
     <div class="page-wrapper">
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-
       <div class="iframe-wrapper">
         <amp-myvideo-player
+          id="player"
           data-widget="mediacenter"
           data-publisher="998"
           data-selection="203"
@@ -119,14 +124,10 @@
         ></amp-myvideo-player>
       </div>
 
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
-      <div class="box">I'm a fancy box inside a fancy AMP page!</div>
+      <div class="controls-wrapper">
+        <button on="tap:player.play">Play</button>
+        <button on="tap:player.pause">Pause</button>
+      </div>
     </div>
   </body>
 </html>
