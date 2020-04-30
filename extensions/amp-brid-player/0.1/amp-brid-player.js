@@ -288,6 +288,7 @@ class AmpBridPlayer extends AMP.BaseElement {
       if (params[3] == 'ready') {
         this.playerReadyResolver_(this.iframe_);
       }
+
       redispatch(element, params[3], {
         'ready': VideoEvents.LOAD,
         'play': VideoEvents.PLAYING,

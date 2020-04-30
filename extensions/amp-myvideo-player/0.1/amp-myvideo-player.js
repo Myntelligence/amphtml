@@ -16,8 +16,14 @@
 
 import {Deferred} from '../../../src/utils/promise';
 import {Services} from '../../../src/services';
-import {createFrameFor} from '../../../src/iframe-video';
+import {VideoEvents} from '../../../src/video-interface';
+import {
+  createFrameFor,
+  originMatches,
+  redispatch,
+} from '../../../src/iframe-video';
 import {installVideoManagerForDoc} from '../../../src/service/video-manager-impl';
+import {listen} from '../../../src/event-helper';
 import {removeElement} from '../../../src/dom';
 import {userAssert} from '../../../src/log';
 
@@ -45,6 +51,24 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
 
     /** @private {?Element} */
     this.iframe_ = null;
+
+    /** @private {?Function} */
+    this.unlistenMessage_ = null;
+
+    /** @private {?number}  */
+    this.currentTime_ = 0;
+
+    /** @private {?number}  */
+    this.currentDuration_ = 0;
+
+    /** @private {?number}  */
+    this.currentVolume_ = 0;
+
+    /** @private {?boolean}  */
+    this.muted_ = false;
+
+    /** @private {?string}  */
+    this.postMessagePrefix_ = 'topw://';
   }
 
   /**
@@ -110,6 +134,74 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
     return layout;
   }
 
+  /**
+   * @param {!Event} event
+   * @return {object}
+   * @private
+   */
+  parseWidgetMessageData_(event) {
+    return JSON.parse(event.data.replace(this.postMessagePrefix_, ''));
+  }
+
+  /**
+   * @param {!Event} event
+   * @return {boolean}
+   * @private
+   */
+  isTopMessage_(event) {
+    return event.data.includes(this.postMessagePrefix_);
+  }
+
+  /**
+   * @param {!Event} event
+   * @private
+   */
+  handleWidgetMessages_(event) {
+    if (
+      !originMatches(event, this.iframe_, 'http://localhost:3000') ||
+      !this.isTopMessage_(event)
+    ) {
+      return;
+    }
+
+    const {element} = this;
+    const {type, data} = this.parseWidgetMessageData_(event);
+
+    redispatch(element, type, {
+      'ready': VideoEvents.LOAD,
+      'play': VideoEvents.PLAYING,
+      'pause': VideoEvents.PAUSE,
+      'ended': VideoEvents.ENDED,
+      'adStart': VideoEvents.AD_START,
+      'adEnd': VideoEvents.AD_END,
+      'loadedmetadata': VideoEvents.LOADEDMETADATA,
+    });
+
+    if (type === 'current-time') {
+      this.currentTime_ = data.currentTime;
+    }
+
+    if (type === 'current-duration') {
+      this.currentDuration_ = data.currentDuration;
+    }
+
+    if (type === 'muted') {
+      this.muted_ = data.muted;
+    }
+
+    if (type === 'current-volume') {
+      this.currentVolume_ = data.currentVolume;
+
+      if (data.currentVolume === 0 && !this.muted_) {
+        this.muted_ = true;
+      }
+
+      if (data.currentVolume > 0 && this.muted_) {
+        this.muted_ = false;
+      }
+    }
+  }
+
   /** @override */
   layoutCallback() {
     const iframeWrapperPosition = this.element.getBoundingClientRect();
@@ -173,6 +265,12 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
 
     this.iframe_ = /** @type {HTMLIFrameElement} */ (iframe);
 
+    this.unlistenMessage_ = listen(
+      this.win,
+      'message',
+      this.handleWidgetMessages_.bind(this)
+    );
+
     iframe.setAttribute(
       'sandbox',
       'allow-scripts allow-same-origin allow-popups'
@@ -187,6 +285,10 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
       removeElement(this.iframe_);
 
       this.iframe_ = null;
+    }
+
+    if (this.unlistenMessage_) {
+      this.unlistenMessage_();
     }
 
     const deferred = new Deferred();
@@ -238,6 +340,26 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
     this.sendMessageToWidget_({
       type: 'unmute',
     });
+  }
+
+  /** @override */
+  getCurrentTime() {
+    return this.currentTime_;
+  }
+
+  /** @override */
+  getCurrentDuration() {
+    return this.currentDuration_;
+  }
+
+  /** @override */
+  getCurrentVolume() {
+    return this.currentVolume_;
+  }
+
+  /** @override */
+  getIsMuted() {
+    return this.muted_;
   }
 }
 
