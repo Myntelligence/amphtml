@@ -33,3 +33,47 @@ limitations under the License.
 -->
 
 # `amp-myvideo-player`
+
+An `amp-myvideo-player` displays the Brid Player used in [theoutplay.com](http://www.theoutplay.com/) Video Platform.
+
+## Example
+
+The `width` and `height` attributes determine the aspect ratio of the player embedded in responsive layouts.
+
+Example:
+
+```html
+<amp-myvideo-player
+  data-widget="mediacenter"
+  data-publisher="998"
+  data-selection="203"
+  data-configuration="633"
+  data-hash="8ad989d0050b4bb2cefd13807be3d702"
+  layout="responsive"
+  width="480"
+  height="270"
+></amp-myvideo-player>
+```
+
+## Attributes
+
+<tr>
+  <td width="40%"><strong>data-widget</strong></td>
+  <td>The type of widget to use, example: Mediacenter.</td>
+</tr>
+<tr>
+  <td width="40%"><strong>data-publisher</strong></td>
+  <td>The Theoutplay publisher ID.</td>
+</tr>
+<tr>
+  <td width="40%"><strong>data-selection</strong></td>
+  <td>The id of the video selection.</td>
+</tr>
+<tr>
+  <td width="40%"><strong>data-configuration</strong></td>
+  <td>The id of the widget configuration to use.</td>
+</tr>
+<tr>
+  <td width="40%"><strong>data-hash</strong></td>
+  <td>Use the hash that is generated during the Widget Configuration creation.</td>
+</tr>

@@ -133,12 +133,6 @@ describes.realWin(
         .then(() => bc);
     }
 
-    // function fakePostMessage(bc) {
-    //   bc.implementation_.sendMessageToWidget_({
-    //     type: 'play',
-    //   });
-    // }
-
     it('renders', () => {
       const player = renderMyVideoPlayer(widgetAttributes, true);
 
@@ -175,19 +169,5 @@ describes.realWin(
         expect(obj.iframe_).to.be.null;
       });
     });
-
-    // it('send messages to widget', () => {
-    //   const player = renderMyVideoPlayer(widgetAttributes, true);
-
-    //   return player.then((bc) => {
-    //     const p = listenOncePromise(bc, VideoEvents.LOAD);
-
-    //     fakePostMessage(bc, {
-    //       type: 'play',
-    //     });
-
-    //     return p;
-    //   });
-    // });
   }
 );
