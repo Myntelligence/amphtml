@@ -144,21 +144,11 @@ const forbiddenTerms = {
     ],
     checkInTestFolder: true,
   },
-  // Match `getMode` that is not followed by a "()." and is assigned
-  // as a variable.
-  '\\bgetMode\\([^)]*\\)(?!\\.)': {
-    message: realiasGetMode,
-    whitelist: ['src/mode.js', 'dist.3p/current/integration.js'],
-  },
-  'import[^}]*\\bgetMode as': {
-    message: realiasGetMode,
-  },
   '\\bgetModeObject\\(': {
     message: realiasGetMode,
     whitelist: [
       'src/mode-object.js',
       'src/iframe-attributes.js',
-      'src/log.js',
       'dist.3p/current/integration.js',
     ],
   },
@@ -435,7 +425,7 @@ const forbiddenTerms = {
       'extensions/amp-experiment/1.0/variant.js',
       'extensions/amp-user-notification/0.1/amp-user-notification.js',
       'extensions/amp-consent/0.1/consent-state-manager.js',
-      'extensions/amp-story/1.0/amp-story-quiz.js',
+      'extensions/amp-story/1.0/amp-story-reaction.js',
     ],
   },
   'getBaseCid': {

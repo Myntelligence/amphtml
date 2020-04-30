@@ -15,8 +15,10 @@
  */
 'use strict';
 
+const argv = require('minimist')(process.argv.slice(2));
 const colors = require('ansi-colors');
 const log = require('fancy-log');
+const wrappers = require('./compile-wrappers');
 
 const {VERSION: internalRuntimeVersion} = require('./internal-version');
 
@@ -172,6 +174,10 @@ exports.jsBundles = {
     options: {
       minifiedName: 'v0.js',
       includePolyfills: true,
+      wrapper: wrappers.mainBinary,
+      singlePassCompilation: argv.single_pass,
+      esmPassCompilation: argv.esm,
+      includeOnlyESMLevelPolyfills: argv.esm,
     },
   },
   'amp-shadow.js': {
@@ -890,7 +896,8 @@ exports.extensionBundles = [
         'amp-story-draggable-drawer-header',
         'amp-story-hint',
         'amp-story-info-dialog',
-        'amp-story-quiz',
+        'amp-story-reaction',
+        'amp-story-reaction-quiz',
         'amp-story-share',
         'amp-story-share-menu',
         'amp-story-system-layer',
