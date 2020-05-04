@@ -260,7 +260,7 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
 
     const iframe = createFrameFor(
       this,
-      `http://localhost:3000/widget.html?${urlParameters.join('&')}`
+      `https://amp.theoutplay.com/dev/widget.html?${urlParameters.join('&')}`
     );
 
     this.iframe_ = /** @type {HTMLIFrameElement} */ (iframe);

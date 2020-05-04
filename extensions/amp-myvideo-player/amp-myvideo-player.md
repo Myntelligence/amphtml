@@ -34,7 +34,7 @@ limitations under the License.
 
 # `amp-myvideo-player`
 
-An `amp-myvideo-player` displays the Brid Player used in [theoutplay.com](http://www.theoutplay.com/) Video Platform.
+The `amp-myvideo-player` displays the MyVideo player used in [theoutplay.com](http://www.theoutplay.com/) Video Platform.
 
 ## Example
 
@@ -63,7 +63,7 @@ Example:
 </tr>
 <tr>
   <td width="40%"><strong>data-publisher</strong></td>
-  <td>The Theoutplay publisher ID.</td>
+  <td>The MyVideo publisher ID.</td>
 </tr>
 <tr>
   <td width="40%"><strong>data-selection</strong></td>
