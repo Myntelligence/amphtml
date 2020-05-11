@@ -69,6 +69,9 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
 
     /** @private {?string}  */
     this.postMessagePrefix_ = 'topw://';
+
+    /** @private {?string}  */
+    this.baseUrl_ = 'https://amp.theoutplay.com/dev';
   }
 
   /**
@@ -158,7 +161,7 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
    */
   handleWidgetMessages_(event) {
     if (
-      !originMatches(event, this.iframe_, 'http://localhost:3000') ||
+      !originMatches(event, this.iframe_, this.baseUrl_) ||
       !this.isTopMessage_(event)
     ) {
       return;
@@ -260,7 +263,7 @@ export class AmpMyvideoPlayer extends AMP.BaseElement {
 
     const iframe = createFrameFor(
       this,
-      `https://amp.theoutplay.com/dev/widget.html?${urlParameters.join('&')}`
+      `${this.baseUrl_}/widget.html?${urlParameters.join('&')}`
     );
 
     this.iframe_ = /** @type {HTMLIFrameElement} */ (iframe);
