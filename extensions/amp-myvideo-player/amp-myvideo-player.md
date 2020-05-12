@@ -44,11 +44,11 @@ Example:
 
 ```html
 <amp-myvideo-player
-  data-widget="mediacenter"
-  data-publisher="998"
-  data-selection="203"
-  data-configuration="633"
-  data-hash="8ad989d0050b4bb2cefd13807be3d702"
+  data-widget="intext"
+  data-publisher="111"
+  data-selection="222"
+  data-configuration="333"
+  data-hash="ajs72jshau28ad1238aj1238asd"
   layout="responsive"
   width="480"
   height="270"
@@ -59,7 +59,7 @@ Example:
 
 <tr>
   <td width="40%"><strong>data-widget</strong></td>
-  <td>The type of widget to use, example: Mediacenter.</td>
+  <td>The type of widget to use, example: Intext.</td>
 </tr>
 <tr>
   <td width="40%"><strong>data-publisher</strong></td>
